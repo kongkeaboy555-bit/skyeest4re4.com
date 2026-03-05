@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusTop — Game Top Up Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;600;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #05070f;
+  --bg2: #090d1a;
+  --surface: #0c1120;
+  --surface2: #111829;
+  --surface3: #161f35;
+  --border: rgba(96,165,250,0.1);
+  --border2: rgba(96,165,250,0.2);
+  --accent: #38bdf8;
+  --accent-glow: rgba(56,189,248,0.25);
+  --purple: #818cf8;
+  --orange: #fb923c;
+  --gold: #fbbf24;
+  --green: #34d399;
+  --red: #f87171;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #475569;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* ── BG EFFECTS ── */
+.bg-mesh{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.bg-mesh::before{content:'';position:absolute;width:800px;height:800px;top:-200px;left:-200px;
+  background:radial-gradient(circle,rgba(56,189,248,0.04) 0%,transparent 70%);border-radius:50%;}
+.bg-mesh::after{content:'';position:absolute;width:600px;height:600px;bottom:-100px;right:-100px;
+  background:radial-gradient(circle,rgba(129,140,248,0.05) 0%,transparent 70%);border-radius:50%;}
+.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(96,165,250,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(96,165,250,0.025) 1px,transparent 1px);
+  background-size:60px 60px;}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:100;height:68px;
+  background:rgba(5,7,15,0.9);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1rem,4vw,3rem);}
+.logo{font-family:'Orbitron',monospace;font-size:1.3rem;font-weight:900;letter-spacing:3px;
+  background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-decoration:none;flex-shrink:0;}
+.logo em{-webkit-text-fill-color:var(--orange);font-style:normal;}
+nav{display:flex;gap:2rem;align-items:center;}
+nav a{font-family:'Rajdhani',sans-serif;font-weight:600;color:var(--text2);text-decoration:none;
+  font-size:.9rem;letter-spacing:1.5px;text-transform:uppercase;transition:color .2s;cursor:pointer;}
+nav a:hover{color:var(--accent);}
+.header-right{display:flex;align-items:center;gap:.75rem;}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2);padding:.45rem 1rem;
+  border-radius:8px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.85rem;
+  letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-accent{background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;border:none;
+  padding:.45rem 1.2rem;border-radius:8px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:.85rem;letter-spacing:1px;text-transform:uppercase;transition:opacity .2s,transform .15s;white-space:nowrap;}
+.btn-accent:hover{opacity:.85;transform:translateY(-1px);}
+.user-badge{display:flex;align-items:center;gap:.6rem;}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;color:#fff;font-weight:700;}
+.user-name{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--accent);font-size:.9rem;}
+
+/* ── HERO ── */
+.hero{position:relative;z-index:1;padding:clamp(3rem,8vw,6rem) clamp(1rem,4vw,3rem) 3rem;text-align:center;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);
+  color:var(--accent);font-family:'Rajdhani',sans-serif;font-size:.78rem;
+  letter-spacing:2px;text-transform:uppercase;padding:.35rem 1rem;border-radius:99px;margin-bottom:1.5rem;}
+.hero-eyebrow::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.hero h1{font-family:'Orbitron',monospace;font-size:clamp(2rem,5.5vw,4rem);font-weight:900;
+  line-height:1.05;letter-spacing:-1px;margin-bottom:1.2rem;}
+.hero h1 .line1{display:block;color:#fff;}
+.hero h1 .line2{display:block;background:linear-gradient(90deg,var(--accent),var(--purple),var(--orange));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{color:var(--text2);font-size:1.05rem;max-width:500px;margin:0 auto 2.5rem;line-height:1.7;}
+.hero-cta{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-bottom:3.5rem;}
+.btn-lg{padding:.75rem 2rem;border-radius:10px;font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:1rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;border:none;}
+.btn-lg.primary{background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;}
+.btn-lg.primary:hover{opacity:.85;transform:translateY(-2px);box-shadow:0 8px 30px rgba(56,189,248,0.3);}
+.btn-lg.secondary{background:var(--surface2);border:1px solid var(--border2);color:var(--text);}
+.btn-lg.secondary:hover{border-color:var(--accent);color:var(--accent);}
+.hero-stats{display:flex;justify-content:center;gap:clamp(1.5rem,4vw,4rem);flex-wrap:wrap;}
+.stat{text-align:center;}
+.stat-val{font-family:'Orbitron',monospace;font-size:clamp(1.4rem,3vw,2rem);font-weight:800;
+  background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-lbl{font-size:.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px;}
+
+/* ── SEARCH & FILTER ── */
+.search-section{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 clamp(1rem,4vw,3rem) 2.5rem;}
+.search-box{position:relative;margin-bottom:1.2rem;}
+.search-box input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;
+  color:var(--text);padding:.85rem 1rem .85rem 3rem;font-size:1rem;font-family:'DM Sans',sans-serif;
+  outline:none;transition:border-color .2s,box-shadow .2s;}
+.search-box input::placeholder{color:var(--text3);}
+.search-box input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(56,189,248,0.1);}
+.search-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text3);font-size:1.1rem;}
+.filter-chips{display:flex;gap:.5rem;flex-wrap:wrap;}
+.chip{background:var(--surface2);border:1px solid var(--border);color:var(--text2);
+  padding:.35rem .9rem;border-radius:8px;cursor:pointer;font-family:'Rajdhani',sans-serif;
+  font-weight:600;font-size:.8rem;letter-spacing:.5px;text-transform:uppercase;transition:all .2s;}
+.chip:hover,.chip.active{background:rgba(56,189,248,0.1);border-color:var(--accent);color:var(--accent);}
+
+/* ── GAMES SECTION ── */
+.games-section{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 clamp(1rem,4vw,3rem) 5rem;}
+.section-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;}
+.section-line{width:3px;height:22px;background:linear-gradient(var(--accent),var(--purple));border-radius:2px;}
+.section-title{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;letter-spacing:2px;color:var(--text);}
+.section-count{margin-left:auto;font-size:.72rem;font-family:'Rajdhani',sans-serif;font-weight:700;
+  color:var(--accent);border:1px solid rgba(56,189,248,0.3);padding:.2rem .6rem;border-radius:6px;letter-spacing:1px;}
+
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:1rem;}
+
+.game-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;
+  cursor:pointer;transition:all .25s;position:relative;group:true;}
+.game-card:hover{transform:translateY(-6px);border-color:var(--accent);
+  box-shadow:0 12px 40px rgba(56,189,248,0.12),0 0 0 1px rgba(56,189,248,0.15);}
+.game-card.popular .hot-badge{display:flex;}
+.hot-badge{display:none;position:absolute;top:8px;right:8px;
+  background:linear-gradient(135deg,#f97316,#ef4444);color:#fff;
+  font-size:.6rem;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:1.5px;
+  padding:3px 8px;border-radius:6px;align-items:center;gap:3px;}
+.game-thumb{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+  font-size:3.2rem;background:var(--surface2);position:relative;overflow:hidden;transition:transform .3s;}
+.game-card:hover .game-thumb{transform:scale(1.05);}
+.game-thumb::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 50%,rgba(5,7,15,0.6));pointer-events:none;}
+.game-info{padding:.8rem .9rem;}
+.game-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.95rem;color:var(--text);
+  margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.game-cat{font-size:.68rem;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;}
+.game-price{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.85rem;
+  color:var(--accent);display:flex;align-items:center;gap:.3rem;}
+.game-price span{font-size:.7rem;color:var(--text3);font-weight:400;}
+
+/* Loading state */
+.loading-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:1rem;}
+.skeleton{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;animation:shimmer 1.5s infinite;}
+.skeleton-thumb{width:100%;aspect-ratio:1/1;background:var(--surface2);}
+.skeleton-info{padding:.8rem .9rem;}
+.skeleton-line{height:12px;background:var(--surface3);border-radius:4px;margin-bottom:8px;}
+.skeleton-line.short{width:60%;}
+.skeleton-line.shorter{width:40%;}
+@keyframes shimmer{0%,100%{opacity:.6;}50%{opacity:1;}}
+
+/* ── TRUST BAR ── */
+.trust-bar{position:relative;z-index:1;background:var(--surface);border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);padding:1rem clamp(1rem,4vw,3rem);
+  display:flex;justify-content:center;gap:clamp(1.5rem,4vw,4rem);flex-wrap:wrap;margin-bottom:3rem;}
+.trust-item{display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:var(--text2);
+  font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.5px;}
+.trust-item .ti{font-size:1.1rem;}
+
+/* ── MODAL BASE ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(10px);z-index:200;align-items:center;justify-content:center;padding:1rem;}
+.overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;
+  width:100%;max-width:660px;max-height:92vh;overflow-y:auto;animation:modalIn .3s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes modalIn{from{transform:translateY(24px) scale(0.97);opacity:0;}to{transform:none;opacity:1;}}
+.modal-hd{display:flex;gap:1rem;align-items:flex-start;padding:1.5rem 1.5rem 1.2rem;
+  border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:2;}
+.modal-icon{width:68px;height:68px;border-radius:16px;font-size:2.4rem;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;background:var(--surface2);}
+.modal-title-group h2{font-family:'Orbitron',monospace;font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.modal-title-group p{font-size:.82rem;color:var(--text2);}
+.modal-close{margin-left:auto;background:var(--surface2);border:1px solid var(--border);color:var(--text2);
+  width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;
+  justify-content:center;transition:all .2s;flex-shrink:0;}
+.modal-close:hover{background:rgba(248,113,113,0.1);border-color:var(--red);color:var(--red);}
+.modal-body{padding:1.5rem;}
+
+/* ── TOP-UP FORM ── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.2rem;}
+.form-group{margin-bottom:1.2rem;}
+.form-label{display:block;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.78rem;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);margin-bottom:.5rem;}
+.form-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;
+  color:var(--text);padding:.65rem 1rem;font-size:.95rem;font-family:'DM Sans',sans-serif;
+  outline:none;transition:border-color .2s,box-shadow .2s;}
+.form-input::placeholder{color:var(--text3);}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(56,189,248,0.08);}
+
+/* ── PACKAGES ── */
+.pkgs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:.65rem;margin-bottom:.5rem;}
+.pkg{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;
+  padding:.85rem .75rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.pkg:hover{border-color:rgba(56,189,248,0.4);}
+.pkg.sel{border-color:var(--accent);background:rgba(56,189,248,0.06);
+  box-shadow:0 0 0 1px var(--accent),0 4px 20px rgba(56,189,248,0.12);}
+.pkg.best::before{content:'BEST';position:absolute;top:-9px;left:50%;transform:translateX(-50%);
+  background:var(--gold);color:#000;font-size:.58rem;font-family:'Rajdhani',sans-serif;font-weight:700;
+  letter-spacing:1px;padding:2px 8px;border-radius:99px;white-space:nowrap;}
+.pkg-emoji{font-size:1.4rem;margin-bottom:3px;}
+.pkg-amt{font-family:'Orbitron',monospace;font-size:.95rem;font-weight:700;color:var(--text);display:block;}
+.pkg-cur{font-size:.65rem;color:var(--text3);margin-bottom:4px;}
+.pkg-price{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.88rem;color:var(--accent);}
+.pkg-bonus{font-size:.62rem;color:var(--green);font-family:'Rajdhani',sans-serif;font-weight:600;margin-top:2px;}
+
+/* ── PAYMENT PILLS ── */
+.pay-grid{display:flex;flex-wrap:wrap;gap:.55rem;}
+.pay-pill{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;
+  padding:.5rem 1rem;cursor:pointer;font-size:.82rem;font-family:'Rajdhani',sans-serif;
+  font-weight:600;transition:all .2s;display:flex;align-items:center;gap:.4rem;color:var(--text2);}
+.pay-pill:hover,.pay-pill.sel{border-color:var(--purple);color:var(--text);background:rgba(129,140,248,0.08);}
+
+/* ── ORDER SUMMARY ── */
+.order-sum{background:var(--surface2);border:1px solid var(--border);border-radius:12px;
+  padding:1rem 1.2rem;margin-bottom:1.2rem;}
+.sum-row{display:flex;justify-content:space-between;align-items:center;
+  font-size:.85rem;color:var(--text2);padding:.3rem 0;}
+.sum-row:last-child{padding-top:.6rem;border-top:1px solid var(--border);
+  font-weight:600;font-size:.95rem;color:var(--text);}
+.sum-row:last-child .sum-val{color:var(--accent);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;}
+.sum-val{color:var(--text);font-weight:500;}
+
+/* ── BUY BUTTON ── */
+.btn-buy{width:100%;padding:1rem;border:none;border-radius:12px;cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:2px;text-transform:uppercase;
+  transition:all .25s;position:relative;overflow:hidden;}
+.btn-buy::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.1),transparent);opacity:0;transition:.2s;}
+.btn-buy:hover:not(:disabled)::before{opacity:1;}
+.btn-buy:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 30px rgba(56,189,248,0.3);}
+.btn-buy:disabled{opacity:.5;cursor:not-allowed;}
+
+/* ── AUTH MODAL ── */
+.auth-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.5rem;}
+.auth-tab{flex:1;padding:.75rem;text-align:center;cursor:pointer;font-family:'Rajdhani',sans-serif;
+  font-weight:700;font-size:.9rem;letter-spacing:1px;text-transform:uppercase;color:var(--text2);
+  border-bottom:2px solid transparent;transition:all .2s;}
+.auth-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.auth-form{display:none;}
+.auth-form.active{display:block;}
+.form-error{color:var(--red);font-size:.82rem;margin-bottom:.9rem;padding:.5rem .8rem;
+  background:rgba(248,113,113,0.08);border-radius:8px;border:1px solid rgba(248,113,113,0.2);}
+
+/* ── ORDER STATUS ── */
+.order-steps{display:flex;margin:1rem 0 1.5rem;position:relative;}
+.order-steps::before{content:'';position:absolute;top:14px;left:14px;right:14px;height:2px;
+  background:var(--border);z-index:0;}
+.step{flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem;z-index:1;}
+.step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);
+  background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:.72rem;
+  transition:all .4s;}
+.step.done .step-dot{background:var(--green);border-color:var(--green);color:#fff;}
+.step.active .step-dot{background:var(--accent);border-color:var(--accent);color:#fff;
+  box-shadow:0 0 16px rgba(56,189,248,0.5);animation:stepPulse 1.5s infinite;}
+@keyframes stepPulse{0%,100%{box-shadow:0 0 16px rgba(56,189,248,0.5);}50%{box-shadow:0 0 28px rgba(56,189,248,0.8);}}
+.step-lbl{font-size:.65rem;color:var(--text3);font-family:'Rajdhani',sans-serif;font-weight:600;
+  letter-spacing:.5px;text-transform:uppercase;text-align:center;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:500;
+  padding:.85rem 1.4rem;border-radius:12px;font-family:'Rajdhani',sans-serif;
+  font-weight:700;font-size:.95rem;letter-spacing:.5px;max-width:360px;
+  display:flex;align-items:center;gap:.6rem;
+  transform:translateX(120%);opacity:0;transition:all .4s cubic-bezier(0.34,1.56,0.64,1);}
+.toast.show{transform:translateX(0);opacity:1;}
+.toast.ok{background:#064e3b;border:1px solid var(--green);color:var(--green);}
+.toast.err{background:#450a0a;border:1px solid var(--red);color:var(--red);}
+.toast.info{background:#1e1b4b;border:1px solid var(--purple);color:var(--purple);}
+
+/* ── FOOTER ── */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:2rem clamp(1rem,4vw,3rem);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-logo{font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;letter-spacing:2px;
+  background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+footer p{font-size:.8rem;color:var(--text3);}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+@media(max-width:640px){
+  nav{display:none;}
+  .hero h1{letter-spacing:-0.5px;}
+  .form-row{grid-template-columns:1fr;}
+  footer{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="grid-bg"></div>
+
+<!-- HEADER -->
+<header>
+  <a href="#" class="logo">NEXUS<em>TOP</em></a>
+  <nav>
+    <a onclick="scrollTo(0,0)">Home</a>
+    <a onclick="document.querySelector('.games-section').scrollIntoView({behavior:'smooth'})">Games</a>
+    <a onclick="showMyOrders()">My Orders</a>
+    <a href="#">Support</a>
+  </nav>
+  <div class="header-right" id="headerRight">
+    <button class="btn-ghost" onclick="openAuth('login')">Sign In</button>
+    <button class="btn-accent" onclick="openAuth('register')">Register</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">⚡ Instant Delivery — Trusted Store</div>
+  <h1>
+    <span class="line1">Level Up Your Game</span>
+    <span class="line2">Top Up Instantly</span>
+  </h1>
+  <p class="hero-sub">Fast diamond, coin & gem top-ups for all your favorite games. Secure payment, delivered in seconds.</p>
+  <div class="hero-cta">
+    <button class="btn-lg primary" onclick="document.querySelector('.games-section').scrollIntoView({behavior:'smooth'})">Browse Games</button>
+    <button class="btn-lg secondary" onclick="openAuth('register')">Create Account</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-val">500K+</div><div class="stat-lbl">Orders Done</div></div>
+    <div class="stat"><div class="stat-val">50+</div><div class="stat-lbl">Games</div></div>
+    <div class="stat"><div class="stat-val">99.9%</div><div class="stat-lbl">Success Rate</div></div>
+    <div class="stat"><div class="stat-val">24/7</div><div class="stat-lbl">Support</div></div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="ti">⚡</span> Instant Delivery</div>
+  <div class="trust-item"><span class="ti">🔒</span> SSL Secured</div>
+  <div class="trust-item"><span class="ti">✅</span> Official Partner</div>
+  <div class="trust-item"><span class="ti">💬</span> 24/7 Support</div>
+  <div class="trust-item"><span class="ti">🔄</span> Refund Guarantee</div>
+</div>
+
+<!-- SEARCH & FILTERS -->
+<div class="search-section">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" placeholder="Search for a game..." id="searchInput" oninput="onSearch(this.value)">
+  </div>
+  <div class="filter-chips">
+    <div class="chip active" onclick="onFilter('',this)">All</div>
+    <div class="chip" onclick="onFilter('moba',this)">⚔️ MOBA</div>
+    <div class="chip" onclick="onFilter('battle-royale',this)">🎯 Battle Royale</div>
+    <div class="chip" onclick="onFilter('rpg',this)">🐉 RPG</div>
+    <div class="chip" onclick="onFilter('pc',this)">🖥 PC</div>
+    <div class="chip" onclick="onFilter('mobile',this)">📱 Mobile</div>
+  </div>
+</div>
+
+<!-- GAMES -->
+<div class="games-section">
+  <div class="section-header">
+    <div class="section-line"></div>
+    <div class="section-title">ALL GAMES</div>
+    <div class="section-count" id="gameCount">—</div>
+  </div>
+  <div id="gamesGrid">
+    <div class="loading-grid">
+      ${Array(8).fill('<div class="skeleton"><div class="skeleton-thumb"></div><div class="skeleton-info"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line shorter"></div></div></div>').join('')}
+    </div>
+  </div>
+</div>
+
+<!-- TOP-UP MODAL -->
+<div class="overlay" id="topupOverlay" onclick="if(event.target===this)closeTopup()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-icon" id="mIcon"></div>
+      <div class="modal-title-group">
+        <h2 id="mTitle">Game</h2>
+        <p id="mSub">Select a package to top up</p>
+      </div>
+      <button class="modal-close" onclick="closeTopup()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">🆔 Player Info</label>
+        <div class="form-row" style="margin-bottom:0">
+          <input class="form-input" id="fPlayerID" placeholder="Player / User ID" oninput="refreshSummary()">
+          <input class="form-input" id="fServerID" placeholder="Server / Zone ID">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="pkgLabel">💎 Select Package</label>
+        <div class="pkgs-grid" id="pkgsGrid"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">💳 Payment Method</label>
+        <div class="pay-grid" id="payGrid"></div>
+      </div>
+      <div id="orderSumWrap" style="display:none">
+        <div class="order-sum">
+          <div class="sum-row"><span>Game</span><span class="sum-val" id="sGame">—</span></div>
+          <div class="sum-row"><span>Package</span><span class="sum-val" id="sPkg">—</span></div>
+          <div class="sum-row"><span>Player ID</span><span class="sum-val" id="sPlayer">—</span></div>
+          <div class="sum-row"><span>Fee</span><span class="sum-val" id="sFee">—</span></div>
+          <div class="sum-row"><span>Total</span><span class="sum-val sum-val" id="sTotal">—</span></div>
+        </div>
+      </div>
+      <button class="btn-buy" id="btnBuy" onclick="placeOrder()">⚡ BUY NOW</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="overlay" id="authOverlay" onclick="if(event.target===this)closeAuth()">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-hd">
+      <div class="modal-title-group"><h2>👤 My Account</h2></div>
+      <button class="modal-close" onclick="closeAuth()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Sign In</div>
+        <div class="auth-tab" id="tabReg" onclick="switchTab('register')">Register</div>
+      </div>
+      <!-- Login -->
+      <div class="auth-form active" id="formLogin">
+        <div class="form-error" id="loginErr" style="display:none"></div>
+        <div class="form-group"><label class="form-label">Email</label>
+          <input class="form-input" id="lEmail" type="email" placeholder="you@example.com"></div>
+        <div class="form-group"><label class="form-label">Password</label>
+          <input class="form-input" id="lPass" type="password" placeholder="••••••••"
+            onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <button class="btn-buy" onclick="doLogin()">Sign In</button>
+      </div>
+      <!-- Register -->
+      <div class="auth-form" id="formReg">
+        <div class="form-error" id="regErr" style="display:none"></div>
+        <div class="form-group"><label class="form-label">Username</label>
+          <input class="form-input" id="rUser" placeholder="CoolGamer123"></div>
+        <div class="form-group"><label class="form-label">Email</label>
+          <input class="form-input" id="rEmail" type="email" placeholder="you@example.com"></div>
+        <div class="form-group"><label class="form-label">Password (min 8 chars)</label>
+          <input class="form-input" id="rPass" type="password" placeholder="••••••••"></div>
+        <button class="btn-buy" onclick="doRegister()">Create Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS MODAL -->
+<div class="overlay" id="statusOverlay" onclick="if(event.target===this)closeStatus()">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-hd">
+      <div class="modal-title-group"><h2 id="statusTitle">Order Status</h2><p id="statusRef"></p></div>
+      <button class="modal-close" onclick="closeStatus()">✕</button>
+    </div>
+    <div class="modal-body" id="statusBody"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">NEXUSTOP</div>
+  <p>© 2025 NexusTop Store · Fast · Secure · Trusted</p>
+  <p style="font-size:.75rem;color:var(--text3)">Not affiliated with any game publisher</p>
+</footer>
+
+<script>
+// ── CONFIG ─────────────────────────────────────────────────────────────
+const API = '/api'; // Change to 'http://localhost:3001/api' for local dev with separate frontend
+
+// ── STATE ──────────────────────────────────────────────────────────────
+let allGames = [], allPayments = [];
+let activeGame = null, selPkg = null, selPay = null;
+let currentUser = null, token = localStorage.getItem('ntx_token');
+let pollTimer = null;
+
+// ── BOOT ───────────────────────────────────────────────────────────────
+(async () => {
+  await Promise.all([loadGames(), loadPayments()]);
+  if (token) await loadMe();
+})();
+
+// ── API HELPER ─────────────────────────────────────────────────────────
+async function api(path, opts = {}) {
+  const h = { 'Content-Type': 'application/json' };
+  if (token) h['Authorization'] = 'Bearer ' + token;
+  try {
+    const r = await fetch(API + path, { headers: h, ...opts });
+    const d = await r.json();
+    return { ok: r.ok, status: r.status, data: d };
+  } catch {
+    return { ok: false, data: { message: 'Network error — is the server running?' } };
+  }
+}
+
+// ── GAMES ──────────────────────────────────────────────────────────────
+async function loadGames(qs = '') {
+  const { ok, data } = await api('/games' + (qs ? '?' + qs : ''));
+  if (!ok) { renderGamesError(); return; }
+  allGames = data.data;
+  renderGames(allGames);
+}
+
+function renderGames(list) {
+  document.getElementById('gameCount').textContent = list.length + ' GAMES';
+  if (!list.length) {
+    document.getElementById('gamesGrid').innerHTML = '<div style="text-align:center;color:var(--text3);padding:3rem;font-family:Rajdhani,sans-serif;font-size:1.1rem">No games found 🔍</div>';
+    return;
+  }
+  document.getElementById('gamesGrid').innerHTML =
+    '<div class="games-grid">' +
+    list.map(g => `
+      <div class="game-card ${g.is_popular ? 'popular' : ''}" onclick="openTopup('${g.id}')">
+        <div class="hot-badge">🔥 HOT</div>
+        <div class="game-thumb">${g.icon}</div>
+        <div class="game-info">
+          <div class="game-name">${g.name}</div>
+          <div class="game-cat">${g.category} · ${g.platform}</div>
+          <div class="game-price">from $${parseFloat(g.min_price).toFixed(2)} <span>/ package</span></div>
+        </div>
+      </div>
+    `).join('') +
+    '</div>';
+}
+
+function renderGamesError() {
+  document.getElementById('gamesGrid').innerHTML = '<div style="text-align:center;color:var(--red);padding:3rem">Failed to load games. Make sure the backend is running.</div>';
+}
+
+let searchTimer;
+function onSearch(q) {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => loadGames(q ? 'search=' + encodeURIComponent(q) : ''), 300);
+}
+
+async function onFilter(cat, el) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  await loadGames(cat ? 'category=' + cat : '');
+}
+
+// ── PAYMENTS ───────────────────────────────────────────────────────────
+async function loadPayments() {
+  const { ok, data } = await api('/payments');
+  if (ok) allPayments = data.data;
+}
+
+function renderPayments() {
+  document.getElementById('payGrid').innerHTML = allPayments.map((p, i) => `
+    <div class="pay-pill ${i === 0 ? 'sel' : ''}" onclick="pickPay(this,'${p.id}',${p.fee_pct})">
+      ${p.icon} ${p.name}
+    </div>
+  `).join('');
+  if (allPayments.length) selPay = { id: allPayments[0].id, fee: allPayments[0].fee_pct };
+}
+
+function pickPay(el, id, fee) {
+  document.querySelectorAll('.pay-pill').forEach(e => e.classList.remove('sel'));
+  el.classList.add('sel');
+  selPay = { id, fee: parseFloat(fee) };
+  refreshSummary();
+}
+
+// ── TOP-UP MODAL ────────────────────────────────────────────────────────
+async function openTopup(gameId) {
+  const { ok, data } = await api('/games/' + gameId);
+  if (!ok) { toast('Failed to load game data', 'err'); return; }
+  activeGame = data.data;
+  selPkg = null;
+
+  document.getElementById('mIcon').textContent = activeGame.icon;
+  document.getElementById('mTitle').textContent = activeGame.name;
+  document.getElementById('mSub').textContent = (activeGame.packages[0]?.currency || 'Currency') + ' Top Up';
+  document.getElementById('fPlayerID').value = '';
+  document.getElementById('fServerID').value = '';
+  document.getElementById('fServerID').placeholder = activeGame.needs_server ? 'Server / Zone (required)' : 'Server / Zone (optional)';
+  document.getElementById('orderSumWrap').style.display = 'none';
+
+  document.getElementById('pkgsGrid').innerHTML = activeGame.packages.map((p, i) => `
+    <div class="pkg ${p.is_best_val ? 'best' : ''}" onclick="pickPkg(${i})">
+      <div class="pkg-emoji">${activeGame.icon}</div>
+      <span class="pkg-amt">${p.amount.toLocaleString()}</span>
+      <div class="pkg-cur">${p.currency}</div>
+      <div class="pkg-price">$${parseFloat(p.price_usd).toFixed(2)}</div>
+      ${p.bonus ? `<div class="pkg-bonus">${p.bonus}</div>` : ''}
+    </div>
+  `).join('');
+
+  renderPayments();
+  document.getElementById('topupOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function pickPkg(i) {
+  selPkg = activeGame.packages[i];
+  document.querySelectorAll('.pkg').forEach((el, idx) => el.classList.toggle('sel', idx === i));
+  refreshSummary();
+}
+
+function refreshSummary() {
+  if (!selPkg) return;
+  const pid   = document.getElementById('fPlayerID').value || '—';
+  const fee   = parseFloat((selPkg.price_usd * ((selPay?.fee || 0) / 100)).toFixed(4));
+  const total = (parseFloat(selPkg.price_usd) + fee).toFixed(2);
+  document.getElementById('sGame').textContent   = activeGame.name;
+  document.getElementById('sPkg').textContent    = `${selPkg.amount.toLocaleString()} ${selPkg.currency}`;
+  document.getElementById('sPlayer').textContent = pid;
+  document.getElementById('sFee').textContent    = fee > 0 ? `$${fee.toFixed(2)}` : 'Free';
+  document.getElementById('sTotal').textContent  = `$${total}`;
+  document.getElementById('orderSumWrap').style.display = 'block';
+}
+
+async function placeOrder() {
+  const pid = document.getElementById('fPlayerID').value.trim();
+  const sid = document.getElementById('fServerID').value.trim();
+  if (!pid)   { toast('Enter your Player ID', 'err'); return; }
+  if (!selPkg){ toast('Select a package', 'err'); return; }
+  if (!selPay){ toast('Select a payment method', 'err'); return; }
+  if (activeGame.needs_server && !sid) { toast('Server/Zone ID is required for this game', 'err'); return; }
+
+  const btn = document.getElementById('btnBuy');
+  btn.disabled = true; btn.textContent = '⏳ Processing…';
+
+  const { ok, data } = await api('/orders', {
+    method: 'POST',
+    body: JSON.stringify({ game_id: activeGame.id, package_id: selPkg.id, payment_id: selPay.id, player_id: pid, server_id: sid || undefined })
+  });
+
+  btn.disabled = false; btn.textContent = '⚡ BUY NOW';
+
+  if (!ok) { toast(data.message || 'Order failed', 'err'); return; }
+
+  closeTopup();
+  showStatus(data.data);
+}
+
+function closeTopup() {
+  document.getElementById('topupOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── ORDER STATUS ────────────────────────────────────────────────────────
+function showStatus(order) {
+  document.getElementById('statusTitle').textContent = '📦 Order Placed!';
+  document.getElementById('statusRef').textContent   = 'Ref: ' + (order.payment_ref || order.id);
+  renderStatus(order);
+  document.getElementById('statusOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(async () => {
+    const { ok, data } = await api('/orders/' + order.id);
+    if (ok) {
+      renderStatus(data.data);
+      if (['completed','failed','refunded'].includes(data.data.status)) clearInterval(pollTimer);
+    }
+  }, 3000);
+}
+
+function renderStatus(o) {
+  const steps = ['pending','processing','completed'];
+  const idx = steps.indexOf(o.status === 'failed' ? 'processing' : o.status);
+  const colors = { completed: 'var(--green)', failed: 'var(--red)', pending: 'var(--gold)', processing: 'var(--accent)' };
+
+  document.getElementById('statusBody').innerHTML = `
+    <div class="order-steps">
+      ${steps.map((s, i) => `
+        <div class="step ${i < idx || (o.status==='completed' && i<=2) ? 'done' : i===idx ? 'active' : ''}">
+          <div class="step-dot">${(i < idx || o.status==='completed') ? '✓' : i+1}</div>
+          <div class="step-lbl">${s}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="text-align:center;margin-bottom:1.2rem">
+      <span style="display:inline-block;padding:.35rem 1rem;border-radius:99px;
+        font-family:Rajdhani,sans-serif;font-weight:700;font-size:.85rem;letter-spacing:1px;text-transform:uppercase;
+        background:${colors[o.status] || 'var(--text3)'}18;color:${colors[o.status] || 'var(--text3)'};
+        border:1px solid ${colors[o.status] || 'var(--text3)'}44">${o.status.toUpperCase()}</span>
+    </div>
+    <div class="order-sum">
+      <div class="sum-row"><span>Game</span><span class="sum-val">${o.game_icon} ${o.game_name}</span></div>
+      <div class="sum-row"><span>Package</span><span class="sum-val">${o.pkg_amount?.toLocaleString()} ${o.pkg_currency}</span></div>
+      <div class="sum-row"><span>Player ID</span><span class="sum-val">${o.player_id}${o.server_id ? ' / ' + o.server_id : ''}</span></div>
+      <div class="sum-row"><span>Payment</span><span class="sum-val">${o.payment_icon} ${o.payment_name}</span></div>
+      <div class="sum-row"><span>Total Paid</span><span class="sum-val">$${parseFloat(o.total_usd).toFixed(2)}</span></div>
+    </div>
+    ${o.status === 'completed' ? '<div style="text-align:center;color:var(--green);font-family:Rajdhani,sans-serif;font-weight:700;font-size:1rem;margin-top:.5rem">✅ Top-up delivered successfully!</div>' : ''}
+    ${o.status === 'failed'    ? '<div style="text-align:center;color:var(--red);font-family:Rajdhani,sans-serif;font-weight:700;margin-top:.5rem">❌ Order failed. Please contact support.</div>' : ''}
+    ${o.status !== 'completed' && o.status !== 'failed' ? '<div style="text-align:center;color:var(--text3);font-size:.82rem;margin-top:.5rem">⏳ Auto-refreshing every 3 seconds...</div>' : ''}
+  `;
+}
+
+function closeStatus() {
+  if (pollTimer) clearInterval(pollTimer);
+  document.getElementById('statusOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── MY ORDERS ───────────────────────────────────────────────────────────
+async function showMyOrders() {
+  if (!currentUser) { openAuth('login'); return; }
+  const { ok, data } = await api('/orders?limit=10');
+  if (!ok) { toast('Failed to load orders', 'err'); return; }
+
+  document.getElementById('statusTitle').textContent = '📋 My Orders';
+  document.getElementById('statusRef').textContent = '';
+
+  if (!data.data.length) {
+    document.getElementById('statusBody').innerHTML = '<div style="text-align:center;color:var(--text3);padding:2rem;font-family:Rajdhani,sans-serif">No orders yet. Go buy something!</div>';
+  } else {
+    document.getElementById('statusBody').innerHTML = data.data.map(o => `
+      <div onclick="loadOrder('${o.id}')" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;
+        padding:.9rem 1.1rem;margin-bottom:.65rem;cursor:pointer;transition:border-color .2s"
+        onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">
+          <span style="font-family:Rajdhani,sans-serif;font-weight:700">${o.game_icon} ${o.game_name}</span>
+          <span style="font-size:.72rem;padding:.2rem .6rem;border-radius:99px;font-family:Rajdhani,sans-serif;font-weight:700;
+            background:${o.status==='completed'?'rgba(52,211,153,.12)':o.status==='pending'?'rgba(251,191,36,.12)':'rgba(248,113,113,.12)'};
+            color:${o.status==='completed'?'var(--green)':o.status==='pending'?'var(--gold)':'var(--red)'}">${o.status.toUpperCase()}</span>
+        </div>
+        <div style="font-size:.8rem;color:var(--text2)">${o.pkg_amount?.toLocaleString()} ${o.pkg_currency} → ${o.player_id}</div>
+        <div style="font-size:.78rem;color:var(--accent);font-family:Rajdhani,sans-serif;margin-top:.25rem">
+          $${parseFloat(o.total_usd).toFixed(2)} · ${new Date(o.created_at).toLocaleDateString()}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('statusOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+async function loadOrder(id) {
+  const { ok, data } = await api('/orders/' + id);
+  if (!ok) return;
+  document.getElementById('statusTitle').textContent = '📦 Order Detail';
+  document.getElementById('statusRef').textContent   = 'Ref: ' + data.data.payment_ref;
+  renderStatus(data.data);
+}
+
+// ── AUTH ────────────────────────────────────────────────────────────────
+function openAuth(tab) {
+  switchTab(tab);
+  document.getElementById('authOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeAuth() {
+  document.getElementById('authOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function switchTab(tab) {
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabReg').classList.toggle('active', tab === 'register');
+  document.getElementById('formLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('formReg').classList.toggle('active', tab === 'register');
+}
+
+async function doLogin() {
+  const e = document.getElementById('lEmail').value;
+  const p = document.getElementById('lPass').value;
+  const errEl = document.getElementById('loginErr');
+  errEl.style.display = 'none';
+  const { ok, data } = await api('/auth/login', { method: 'POST', body: JSON.stringify({ email: e, password: p }) });
+  if (!ok) { errEl.textContent = data.message; errEl.style.display = 'block'; return; }
+  saveUser(data.data.token, data.data.user);
+  closeAuth();
+  toast(`Welcome back, ${data.data.user.username}! 👋`, 'ok');
+}
+
+async function doRegister() {
+  const u = document.getElementById('rUser').value;
+  const e = document.getElementById('rEmail').value;
+  const p = document.getElementById('rPass').value;
+  const errEl = document.getElementById('regErr');
+  errEl.style.display = 'none';
+  const { ok, data } = await api('/auth/register', { method: 'POST', body: JSON.stringify({ username: u, email: e, password: p }) });
+  if (!ok) { errEl.textContent = data.message; errEl.style.display = 'block'; return; }
+  saveUser(data.data.token, data.data.user);
+  closeAuth();
+  toast(`Account created! Welcome, ${data.data.user.username}! 🎮`, 'ok');
+}
+
+async function loadMe() {
+  const { ok, data } = await api('/auth/me');
+  if (!ok) { token = null; localStorage.removeItem('ntx_token'); return; }
+  currentUser = data.data;
+  renderHeader();
+}
+
+function saveUser(t, u) {
+  token = t; currentUser = u;
+  localStorage.setItem('ntx_token', t);
+  renderHeader();
+}
+
+function logout() {
+  token = null; currentUser = null;
+  localStorage.removeItem('ntx_token');
+  document.getElementById('headerRight').innerHTML = `
+    <button class="btn-ghost" onclick="openAuth('login')">Sign In</button>
+    <button class="btn-accent" onclick="openAuth('register')">Register</button>`;
+  toast('Logged out', 'info');
+}
+
+function renderHeader() {
+  const initial = currentUser.username.charAt(0).toUpperCase();
+  document.getElementById('headerRight').innerHTML = `
+    <div class="user-badge">
+      <div class="user-avatar">${initial}</div>
+      <span class="user-name">${currentUser.username}</span>
+      <button class="btn-ghost" onclick="logout()">Logout</button>
+    </div>`;
+}
+
+// ── TOAST ───────────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, type = 'ok') {
+  const el = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  el.className = `toast ${type} show`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>
